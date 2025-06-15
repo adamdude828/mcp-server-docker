@@ -1,18 +1,33 @@
 # MCP Server: Docker Command Runner
 
-This MCP (Model Context Protocol) server provides a secure HTTP-based interface for running commands inside Docker containers. It acts as a privileged sidecar that can execute arbitrary commands within specified Docker Compose service containers.
+This MCP (Model Context Protocol) server provides a secure interface for running commands inside Docker containers. It acts as a privileged sidecar that can execute arbitrary commands within specified Docker Compose service containers.
 
 ## Features
 
-- HTTP/SSE-based transport for inter-container communication
+- STDIO-based MCP transport for integration with Claude and other MCP clients
 - Execute commands in any Docker Compose service container
-- Real-time streaming of stdout/stderr output
-- Session management for multiple concurrent clients
+- Real-time capture of stdout/stderr output
+- Secure container allowlist configuration
 - Configurable timeouts for long-running commands
 - Clear error messages for common Docker issues
 - Minimal dependencies and secure by design
 
 ## Installation
+
+### Via NPX (Recommended)
+
+Run the MCP server directly without cloning:
+
+```bash
+npx mcp-server-docker
+```
+
+Or install globally:
+
+```bash
+npm install -g mcp-server-docker
+mcp-server-docker
+```
 
 ### As a Docker Service
 
@@ -47,10 +62,9 @@ npm run build
 
 The server accepts the following environment variables:
 
-- `COMPOSE_PROJECT_NAME`: Docker Compose project name (optional)
-- `DEFAULT_SERVICE`: Default service to run commands in (default: "app")
-- `COMPOSE_FILE`: Path to docker-compose.yml (optional)
-- `PORT`: HTTP server port (default: 3000)
+- `ALLOWED_CONTAINERS`: Comma-separated list of allowed service:container pairs (e.g., "app:myapp_container,db:mydb_container")
+- `DEFAULT_SERVICE`: Default service to run commands in (default: "laravel_app")
+- `COMMAND_TIMEOUT`: Command timeout in milliseconds (default: 300000)
 
 ## MCP Tool: run_command
 
@@ -81,22 +95,21 @@ The tool returns the command output with the following structure:
 - Standard error (if any, prefixed with [stderr])
 - Exit code
 
-## HTTP Endpoints
+## Usage
 
-The server exposes the following HTTP endpoints:
+The server uses STDIO transport for MCP communication. When run with `npx mcp-server-docker`, it will:
 
-- `POST /mcp` - Main MCP protocol endpoint for client requests
-- `GET /mcp` - SSE endpoint for server-to-client notifications
-- `DELETE /mcp/:sessionId` - Terminate a session
-- `GET /health` - Health check endpoint
+1. Parse environment variables for allowed containers
+2. Start the MCP server listening on stdin/stdout
+3. Log startup information to stderr
+4. Wait for MCP protocol messages
 
 ## Security Notes
 
-- This server has access to the Docker socket - ensure it's only accessible within the Docker network
+- This server requires access to the Docker socket - ensure Docker is running and accessible
 - No command filtering is applied - relies on container isolation for security
-- Runs as non-root user inside the container
 - Commands timeout after 5 minutes by default
-- HTTP server binds to 0.0.0.0 to allow container-to-container communication
+- Only allowed containers (configured via ALLOWED_CONTAINERS) can be accessed
 
 ## Development
 
