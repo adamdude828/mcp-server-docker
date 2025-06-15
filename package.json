@@ -4,14 +4,32 @@
   "description": "MCP server for executing commands in Docker containers",
   "main": "dist/index.js",
   "type": "module",
+  "bin": {
+    "mcp-server-docker": "dist/index.js"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
-    "test": "jest"
+    "test": "jest",
+    "prepublishOnly": "npm run build"
   },
-  "keywords": ["mcp", "docker", "model-context-protocol"],
-  "author": "",
+  "files": [
+    "dist/**/*",
+    "mcp-config.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": ["mcp", "docker", "model-context-protocol", "cli", "container"],
+  "author": "adamdude828",
+  "homepage": "https://github.com/adamdude828/mcp-server-docker#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adamdude828/mcp-server-docker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adamdude828/mcp-server-docker/issues"
+  },
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.6.0",

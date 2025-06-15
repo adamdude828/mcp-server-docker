@@ -1,0 +1,27 @@
+# Source files
+src/
+tsconfig.json
+test-mcp.js
+
+# Development files
+.env*
+Dockerfile*
+docker-compose.*
+
+# Build artifacts
+node_modules/
+*.log
+*.tmp
+
+# Git files
+.git*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
