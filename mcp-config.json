@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "docker-runner": {
+      "url": "http://localhost:3000",
+      "transport": "sse",
+      "description": "MCP server for executing commands in Docker containers"
+    }
+  }
+}
